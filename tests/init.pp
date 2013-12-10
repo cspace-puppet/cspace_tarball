@@ -1,1 +1,1 @@
-include cspace_tarball
+class { 'cspace_tarball': } 
