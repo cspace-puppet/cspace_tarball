@@ -1,6 +1,7 @@
 # Class: cspace_tarball
 #
-# This module manages cspace_tarball
+# This module manages the server folder for a CollectionSpace server instance.
+# This folder is currently distributed as a 'tarball' ('.tar.gz' compressed archive file).
 #
 # Parameters: none
 #
@@ -24,7 +25,7 @@ class cspace_tarball ( $release_version = '4.0' ) {
     RedHat, Debian: {
       $exec_paths = $linux_exec_paths
     }
-    # Mac OS X
+    # OS X
     darwin: {
       $exec_paths = $osx_exec_paths
     }
