@@ -17,6 +17,11 @@ include cspace_environment::osfamily
 
 class cspace_tarball ( $release_version = '4.0' ) {
     
+  # ---------------------------------------------------------
+  # Identify executables paths for the active 
+  # operating system family
+  # ---------------------------------------------------------
+  
   $os_family        = $cspace_environment::osfamily::os_family
   $linux_exec_paths = $cspace_environment::execpaths::linux_default_exec_paths
   $osx_exec_paths   = $cspace_environment::execpaths::osx_default_exec_paths
@@ -36,6 +41,11 @@ class cspace_tarball ( $release_version = '4.0' ) {
     }
   }
     
+  # ---------------------------------------------------------
+  # Download and 'explode' the distribution tarball
+  # to create a CollectionSpace server folder
+  # ---------------------------------------------------------
+
   case $os_family {
   
     RedHat, Debian, darwin: {
@@ -57,13 +67,23 @@ class cspace_tarball ( $release_version = '4.0' ) {
       # that location.
       
       exec { 'Extract CollectionSpace server distribution':
-        command => 'tar -zxvof cspace-server-4.0.tar.gz',
+        command => "tar -zxvof ${distribution_filename}",
         cwd     => $server_parent_dir,
         creates => "${server_parent_dir}/${server_dir}",
         path    => $exec_paths,
         require => Exec[ 'Download CollectionSpace server distribution' ]
       }
-  
+ 
+      # The two exec resources below can be processed in any order;
+      # hence their sharing of a common 'require' attribute.
+      
+      exec { 'Remove tarball':
+        command => "rm ${distribution_filename}",
+        cwd     => $server_parent_dir,
+        path    => $exec_paths,
+        require => Exec[ 'Extract CollectionSpace server distribution' ]
+      }
+        
       exec { 'Make Tomcat shell scripts executable':
         command => 'chmod u+x *.sh',
         cwd     => "${server_parent_dir}/${server_dir}/bin",  
@@ -81,5 +101,12 @@ class cspace_tarball ( $release_version = '4.0' ) {
     }
     
   } # end case
+  
+  # ---------------------------------------------------------
+  # Change ownership of the CollectionSpace server folder
+  # to a dedicated CollectionSpace user account
+  # ---------------------------------------------------------
+  
+  # FIXME: Add this
   
 }
