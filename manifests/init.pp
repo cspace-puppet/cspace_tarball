@@ -91,7 +91,7 @@ class cspace_tarball ( $release_version = '4.0', $user_acct = $cspace_environmen
         path    => $exec_paths,
         require => Exec[ 'Extract CollectionSpace server distribution' ],
       }
-      
+        
       exec { 'Change ownership of server folder to CollectionSpace admin user':
         # Leaves existing group ownership of that folder 'as is'
         command => "chown -R ${user_acct}: ${server_parent_dir}/${server_dir}",
@@ -109,12 +109,5 @@ class cspace_tarball ( $release_version = '4.0', $user_acct = $cspace_environmen
     }
     
   } # end case
-  
-  # ---------------------------------------------------------
-  # Change ownership of the CollectionSpace server folder
-  # to a dedicated CollectionSpace user account
-  # ---------------------------------------------------------
-  
-  # FIXME: Add this
   
 }
