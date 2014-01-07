@@ -16,7 +16,7 @@ include cspace_environment::execpaths
 include cspace_environment::osfamily
 include cspace_environment::user
 
-class cspace_tarball ( $release_version = '4.0', $user_acct = cspace_environment::user::user_acct_name ) {
+class cspace_tarball ( $release_version = '4.0', $user_acct = $cspace_environment::user::user_acct_name ) {
     
   # ---------------------------------------------------------
   # Identify executables paths for the active 
@@ -60,7 +60,6 @@ class cspace_tarball ( $release_version = '4.0', $user_acct = cspace_environment
         command => "wget ${release_repository_dir}/${release_version}/${distribution_filename}",
         cwd     => $server_parent_dir,
         creates => "${server_parent_dir}/${distribution_filename}",
-        user    => $user_acct,
         path    => $exec_paths,
       }
 
@@ -73,7 +72,6 @@ class cspace_tarball ( $release_version = '4.0', $user_acct = cspace_environment
         cwd     => $server_parent_dir,
         creates => "${server_parent_dir}/${server_dir}",
         path    => $exec_paths,
-        user    => $user_acct,
         require => Exec[ 'Download CollectionSpace server distribution' ]
       }
  
@@ -84,7 +82,6 @@ class cspace_tarball ( $release_version = '4.0', $user_acct = cspace_environment
         command => "rm ${distribution_filename}",
         cwd     => $server_parent_dir,
         path    => $exec_paths,
-        user    => $user_acct,
         require => Exec[ 'Extract CollectionSpace server distribution' ]
       }
         
@@ -92,8 +89,14 @@ class cspace_tarball ( $release_version = '4.0', $user_acct = cspace_environment
         command => 'chmod u+x *.sh',
         cwd     => "${server_parent_dir}/${server_dir}/bin",  
         path    => $exec_paths,
-        user    => $user_acct,
         require => Exec[ 'Extract CollectionSpace server distribution' ],
+      }
+      
+      exec { 'Change ownership of server folder to CollectionSpace admin user':
+        # Leaves existing group ownership of that folder 'as is'
+        command => "chown -R ${user_acct}: ${server_parent_dir}/${server_dir}",
+        path    => $exec_paths,
+        require => Exec[ 'Make Tomcat shell scripts executable' ],
       }
       
     }
