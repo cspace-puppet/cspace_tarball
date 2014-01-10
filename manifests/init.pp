@@ -16,15 +16,7 @@ include cspace_environment::execpaths
 include cspace_environment::osfamily
 include cspace_user
 
-class cspace_tarball ( $release_version = '4.0', $user_acct = '') {
-    
-  if ( ($user_acct == undef) or (empty($user_acct)) ) {
-    include cspace_user
-    $user_account = $cspace_user::user_acct_name
-  }
-  else {
-    $user_account = $user_acct
-  }
+class cspace_tarball ( $release_version = '4.0', $user_acct = $cspace_user::user_acct_name) {
       
   # ---------------------------------------------------------
   # Identify executables paths for the active 
