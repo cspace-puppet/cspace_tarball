@@ -16,7 +16,7 @@ include cspace_environment::execpaths
 include cspace_environment::osfamily
 include cspace_user
 
-class cspace_tarball ( $release_version = $cspace_tarball::config::release_version, $user_acct = $cspace_user::user_acct_name) {
+class cspace_tarball ( $release_version = $cspace_tarball::globals::release_version, $user_acct = $cspace_user::user_acct_name) {
       
   # ---------------------------------------------------------
   # Identify executables paths for the active 
@@ -91,6 +91,9 @@ class cspace_tarball ( $release_version = $cspace_tarball::config::release_versi
         path    => $exec_paths,
         require => Exec[ 'Extract CollectionSpace server distribution' ],
       }
+      
+      # FIXME: Need to add test here that the specified user account exists,
+      # prior to changing ownership of the server folder to that user.
         
       exec { 'Change ownership of server folder to CollectionSpace admin user':
         # Leaves existing group ownership of that folder 'as is'
