@@ -16,7 +16,7 @@ include cspace_environment::execpaths
 include cspace_environment::osfamily
 include cspace_user
 
-class cspace_tarball ( $release_version = '4.0', $user_acct = $cspace_user::user_acct_name) {
+class cspace_tarball ( $release_version = $cspace_tarball::config::release_version, $user_acct = $cspace_user::user_acct_name) {
       
   # ---------------------------------------------------------
   # Identify executables paths for the active 
