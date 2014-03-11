@@ -57,10 +57,11 @@ class cspace_tarball ( $release_version = $cspace_tarball::globals::release_vers
       $server_dir             = 'apache-tomcat-6.0.33'
     
       exec { 'Download CollectionSpace server distribution':
-        command => "wget ${release_repository_dir}/${release_version}/${distribution_filename}",
-        cwd     => $server_parent_dir,
-        creates => "${server_parent_dir}/${distribution_filename}",
-        path    => $exec_paths,
+        command   => "wget ${release_repository_dir}/${release_version}/${distribution_filename}",
+        cwd       => $server_parent_dir,
+        creates   => "${server_parent_dir}/${distribution_filename}",
+        path      => $exec_paths,
+        logoutput => on_failure,
       }
 
       # FIXME: Verify whether the server directory already exists in
@@ -68,28 +69,31 @@ class cspace_tarball ( $release_version = $cspace_tarball::globals::release_vers
       # that location.
       
       exec { 'Extract CollectionSpace server distribution':
-        command => "tar -zxvof ${distribution_filename}",
-        cwd     => $server_parent_dir,
-        creates => "${server_parent_dir}/${server_dir}",
-        path    => $exec_paths,
-        require => Exec[ 'Download CollectionSpace server distribution' ]
+        command   => "tar -zxvof ${distribution_filename}",
+        cwd       => $server_parent_dir,
+        creates   => "${server_parent_dir}/${server_dir}",
+        path      => $exec_paths,
+        logoutput => on_failure,
+        require   => Exec[ 'Download CollectionSpace server distribution' ]
       }
- 
+
       # The two exec resources below can be processed in any order;
       # hence their sharing of a common 'require' attribute.
       
       exec { 'Remove tarball':
-        command => "rm ${distribution_filename}",
-        cwd     => $server_parent_dir,
-        path    => $exec_paths,
-        require => Exec[ 'Extract CollectionSpace server distribution' ]
+        command   => "rm ${distribution_filename}",
+        cwd       => $server_parent_dir,
+        path      => $exec_paths,
+        logoutput => on_failure,
+        require   => Exec[ 'Extract CollectionSpace server distribution' ]
       }
         
       exec { 'Make Tomcat shell scripts executable':
-        command => 'chmod u+x *.sh',
-        cwd     => "${server_parent_dir}/${server_dir}/bin",  
-        path    => $exec_paths,
-        require => Exec[ 'Extract CollectionSpace server distribution' ],
+        command   => 'chmod u+x *.sh',
+        cwd       => "${server_parent_dir}/${server_dir}/bin",  
+        path      => $exec_paths,
+        logoutput => on_failure,
+        require   => Exec[ 'Extract CollectionSpace server distribution' ],
       }
       
       # FIXME: Need to add test here that the specified user account exists,
@@ -97,9 +101,10 @@ class cspace_tarball ( $release_version = $cspace_tarball::globals::release_vers
         
       exec { 'Change ownership of server folder to CollectionSpace admin user':
         # Leaves existing group ownership of that folder 'as is'
-        command => "chown -R ${user_acct}: ${server_parent_dir}/${server_dir}",
-        path    => $exec_paths,
-        require => Exec[ 'Make Tomcat shell scripts executable' ],
+        command   => "chown -R ${user_acct}: ${server_parent_dir}/${server_dir}",
+        path      => $exec_paths,
+        logoutput => on_failure,
+        require   => Exec[ 'Make Tomcat shell scripts executable' ],
       }
       
     }
