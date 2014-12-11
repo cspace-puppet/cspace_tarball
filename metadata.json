@@ -1,11 +1,9 @@
 {
   "name": "collectionspace-cspace_tarball",
   "version": "4.1.1",
-  "summary": "CollectionSpace Tarball Management",
+  "summary": "Manages the archive file ('tarball') pertinent to a CollectionSpace server instance",
   "author": "CollectionSpace",
-  "description": "Manages the archive file ('tarball') pertinent to a CollectionSpace server instance",
   "dependencies": [],
-  "types": [],
   "source": "https://github.com/cspace-puppet/cspace_tarball.git",
   "project_page": "http://wiki.collectionspace.org",
   "license": "Educational Community License, Version 2.0"
