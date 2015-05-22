@@ -16,7 +16,10 @@ include cspace_environment::execpaths
 include cspace_environment::osfamily
 include cspace_user
 
-class cspace_tarball ( $release_version = $cspace_tarball::globals::release_version, $user_acct = $cspace_user::user_acct_name) {
+class cspace_tarball ( 
+  $release_version = $cspace_tarball::globals::release_version, 
+  $server_dir_name = $cspace_tarball::globals::server_dir_name,
+  $user_acct       = $cspace_user::user_acct_name) {
       
   # ---------------------------------------------------------
   # Identify executables paths for the active 
@@ -54,8 +57,7 @@ class cspace_tarball ( $release_version = $cspace_tarball::globals::release_vers
       $distribution_filename  = "cspace-server-${release_version}.tar.gz"
       $release_repository_dir = 'ftp://source.collectionspace.org/pub/collectionspace/releases'
       $server_parent_dir      = '/usr/local/share'
-      $server_dir             = 'apache-tomcat-6.0.33'
-    
+          
       exec { 'Download CollectionSpace server distribution':
         command   => "wget ${release_repository_dir}/${release_version}/${distribution_filename}",
         cwd       => $server_parent_dir,
@@ -71,7 +73,7 @@ class cspace_tarball ( $release_version = $cspace_tarball::globals::release_vers
       exec { 'Extract CollectionSpace server distribution':
         command   => "tar -zxvof ${distribution_filename}",
         cwd       => $server_parent_dir,
-        creates   => "${server_parent_dir}/${server_dir}",
+        creates   => "${server_parent_dir}/${server_dir_name}",
         path      => $exec_paths,
         logoutput => on_failure,
         require   => Exec[ 'Download CollectionSpace server distribution' ]
@@ -90,7 +92,7 @@ class cspace_tarball ( $release_version = $cspace_tarball::globals::release_vers
         
       exec { 'Make Tomcat shell scripts executable':
         command   => 'chmod u+x *.sh',
-        cwd       => "${server_parent_dir}/${server_dir}/bin",  
+        cwd       => "${server_parent_dir}/${server_dir_name}/bin",  
         path      => $exec_paths,
         logoutput => on_failure,
         require   => Exec[ 'Extract CollectionSpace server distribution' ],
@@ -101,7 +103,7 @@ class cspace_tarball ( $release_version = $cspace_tarball::globals::release_vers
         
       exec { 'Change ownership of server folder to CollectionSpace admin user':
         # Leaves existing group ownership of that folder 'as is'
-        command   => "chown -R ${user_acct}: ${server_parent_dir}/${server_dir}",
+        command   => "chown -R ${user_acct}: ${server_parent_dir}/${server_dir_name}",
         path      => $exec_paths,
         logoutput => on_failure,
         require   => Exec[ 'Make Tomcat shell scripts executable' ],
