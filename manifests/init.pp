@@ -55,7 +55,7 @@ class cspace_tarball (
     RedHat, Debian, darwin: {
       
       $distribution_filename  = "cspace-server-${release_version}.tar.gz"
-      $release_repository_dir = 'ftp://source.collectionspace.org/pub/collectionspace/releases'
+      $release_repository_dir = 'ftp://nightly.collectionspace.org/pub/collectionspace/releases'
       $server_parent_dir      = '/usr/local/share'
           
       exec { 'Download CollectionSpace server distribution':
