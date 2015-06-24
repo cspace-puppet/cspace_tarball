@@ -54,7 +54,7 @@ class cspace_tarball (
   
     RedHat, Debian, darwin: {
       
-      $distribution_filename  = "cspace-server-${release_version}.zip"
+      $distribution_filename  = "cspace-server-${release_version}.tar.gz"
       $release_repository_dir = 'ftp://nightly.collectionspace.org/pub/collectionspace/releases'
       $server_parent_dir      = '/usr/local/share'
           
@@ -71,7 +71,7 @@ class cspace_tarball (
       # that location.
       
       exec { 'Extract CollectionSpace server distribution':
-        command   => "unzip -q ${distribution_filename}",
+        command   => "tar -zxvof ${distribution_filename}",
         cwd       => $server_parent_dir,
         creates   => "${server_parent_dir}/${server_dir_name}",
         path      => $exec_paths,
