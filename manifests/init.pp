@@ -64,6 +64,7 @@ class cspace_tarball (
         creates   => "${server_parent_dir}/${distribution_filename}",
         path      => $exec_paths,
         logoutput => on_failure,
+        timeout   => 1800,
       }
 
       # FIXME: Verify whether the server directory already exists in
