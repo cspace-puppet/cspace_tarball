@@ -58,6 +58,10 @@ class cspace_tarball (
       $release_repository_dir = 'ftp://nightly.collectionspace.org/pub/collectionspace/releases'
       $server_parent_dir      = '/usr/local/share'
           
+      notify {"wget ${release_repository_dir}/${release_version}/${distribution_filename}":
+          withpath => true,
+      }
+
       exec { 'Download CollectionSpace server distribution':
         command   => "wget ${release_repository_dir}/${release_version}/${distribution_filename}",
         cwd       => $server_parent_dir,
