@@ -18,8 +18,8 @@
 # the main 'init.pp' manifest, and then remove this separate manifest.
 
 class cspace_tarball::globals (
-  $release_version = hiera('collectionspace::release_version'),
-  $server_dir_name = hiera('collectionspace::server_dir_name'),
+  $release_version = lookup('collectionspace::release_version'),
+  $server_dir_name = lookup('collectionspace::server_dir_name'),
   )
 
  {
